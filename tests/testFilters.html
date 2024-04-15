@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var instance;
+         WebAssembly.instantiateStreaming(fetch("testFilters.wasm"), {}).then(
+	obj => {
+	    instance = obj.instance;
+        console.log(instance);
+	}
+    ).catch(e => console.log(e));
+    </script>
+    
+</body>
+</html>

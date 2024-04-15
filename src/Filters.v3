@@ -38,3 +38,14 @@ class ImgProc extends Filters {
 
     }
 }
+
+component IProc {
+    private var imgProc: ImgProc;
+
+    def init(width: int, height: int, channels: u8) {
+        imgProc = ImgProc.new(width, height, channels);
+    }
+    def grayscale(src: Array<byte>) { imgProc.grayscale(src); }
+}
+
+//export IProc;
