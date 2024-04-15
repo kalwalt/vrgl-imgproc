@@ -1,0 +1,1 @@
+v3c -target=wasm ../../src/Filters.v3 testFilters.v3

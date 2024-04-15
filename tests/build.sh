@@ -1,1 +1,0 @@
-v3c-wasi ../src/Filters.v3 testFilters.v3

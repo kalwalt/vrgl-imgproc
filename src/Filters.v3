@@ -8,13 +8,13 @@ class Filters {
         this.height = height;
         this.channels = channels;
         this.data = Array<byte>.new(width * height * channels);
-        System.puts("Creating new filter with width: ");
+        /*System.puts("Creating new filter with width: ");
         System.puti(this.width);
         System.puts(", height: ");
         System.puti(this.height);
         System.puts(", channels: ");
         System.puti(channels);
-        System.puts("\n");
+        System.puts("\n");*/
     }
 }
 
