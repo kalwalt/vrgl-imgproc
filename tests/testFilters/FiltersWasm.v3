@@ -3,7 +3,7 @@ component IProc {
     def init(width: int, height: int, channels: u8) {
         imgProc = ImgProc.new(width, height, channels);
     }
-    def grayscale(src: Array<byte>) -> Array<byte> { return imgProc.grayscale(src); }
+    def grayscale(src: Vector<byte>) -> Vector<byte> { return imgProc.grayscale(src); }
 }
 
 def main() {}
