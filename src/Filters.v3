@@ -30,4 +30,23 @@ class ImgProc extends Filters {
         }
         return out;
     }
+
+    def grayscale_wasm(src: Array<byte>) -> Array<byte> {
+        var out = Array<byte>.new(this.width * this.height);
+        var r: u8;
+        var g: u8;
+        var b: u8;
+        var q: u8 = 0;
+        var imageSize = this.width * this.height;
+        var cn = this.channels;
+        for (p = 0; p < imageSize; p++) {
+            r = src[q + 0];
+            g = src[q + 1];
+            b = src[q + 2];
+            // https://stackoverflow.com/a/596241/5843642
+            out[p] = (r + r + r + b + g + g + g + g) >> 3;
+            q += cn;
+        }
+        return out;
+    }
 }
