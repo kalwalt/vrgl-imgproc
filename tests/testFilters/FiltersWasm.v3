@@ -1,0 +1,12 @@
+component IProc {
+    private var imgProc: ImgProc;
+    def init(width: int, height: int, channels: u8) {
+        imgProc = ImgProc.new(width, height, channels);
+    }
+    def grayscale(src: Array<byte>) -> Array<byte> { return imgProc.grayscale(src); }
+}
+
+def main() {}
+
+export imgproc_init = IProc.init;
+export imgproc_grayscale = IProc.grayscale;

@@ -8,10 +8,11 @@
 <body>
     <script>
         var instance;
-         WebAssembly.instantiateStreaming(fetch("testFilters.wasm"), {}).then(
+         WebAssembly.instantiateStreaming(fetch("FiltersWasm.wasm"), {}).then(
 	obj => {
 	    instance = obj.instance;
         console.log(instance);
+        instance.exports.imgproc_init(8, 1, 3)
 	}
     ).catch(e => console.log(e));
     </script>

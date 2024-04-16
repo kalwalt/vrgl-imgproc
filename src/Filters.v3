@@ -7,7 +7,7 @@ class Filters {
         this.width = width;
         this.height = height;
         this.channels = channels;
-        this.data = Array<byte>.new(width * height * channels);
+        this.data = Array<byte>.new(width * height);
         /*System.puts("Creating new filter with width: ");
         System.puti(this.width);
         System.puts(", height: ");
@@ -20,7 +20,7 @@ class Filters {
 
 class ImgProc extends Filters {
     new(width: int, height: int, channels: u8) super(width, height, channels) { }
-    def grayscale(src: Array<byte>) {
+    def grayscale(src: Array<byte>) -> Array<byte> {
         var r: u8;
         var g: u8;
         var b: u8;
@@ -35,17 +35,6 @@ class ImgProc extends Filters {
             data[p] = (r + r + r + b + g + g + g + g) >> 3;
             q += cn;
         }
-
+        return data;
     }
 }
-
-component IProc {
-    private var imgProc: ImgProc;
-
-    def init(width: int, height: int, channels: u8) {
-        imgProc = ImgProc.new(width, height, channels);
-    }
-    def grayscale(src: Array<byte>) { imgProc.grayscale(src); }
-}
-
-//export IProc;
