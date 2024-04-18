@@ -49,4 +49,14 @@ class ImgProc extends Filters {
         }
         return out;
     }
+
+    def invert(src: Array<byte>) -> Array<byte> {
+        var out = Array<byte>.new(this.width * this.height * this.channels);
+        var imageSize = this.width * this.height * this.channels;
+        def invert_const: byte = 255;
+        for(p = 0; p < imageSize; p++) {
+            out[p] = invert_const - src[p];
+        }
+        return out;
+    }
 }

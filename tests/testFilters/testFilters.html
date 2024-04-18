@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
+    <canvas id='canvas' width='8' height='1'></canvas>
     <script>
         var instance;
-         WebAssembly.instantiateStreaming(fetch("FiltersWasm.wasm"), {}).then(
-	obj => {
-	    instance = obj.instance;
-        console.log(instance);
-        //instance.exports.imgproc_init(8, 1, 3)
-        //instance.exports.imgProc_init(8, 1, 3)
-        instance.exports.imgProc_gray2(8, 1, 3)
-	}
-    ).catch(e => console.log(e));
+        var WIDTH = 8, HEIGHT = 1;
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        WebAssembly.instantiateStreaming(fetch("FiltersWasm.wasm"), {}).then(
+            obj => {
+                instance = obj.instance;
+                console.log(instance);
+                // try the imgProg_gray function 
+                //const offset = instance.exports.imgProc_gray(WIDTH, HEIGHT, 3)
+                // or the some_data_out function
+                const offset = instance.exports.some_data_out()
+                console.log(offset);
+                const imgData = ctx.createImageData(WIDTH, HEIGHT);
+                const linearMemory = new Uint8Array(instance.exports.memory.buffer, offset, WIDTH * HEIGHT * 4);
+                imgData.data.set(linearMemory);
+                ctx.putImageData(imgData, 0, 0);
+            }
+        ).catch(e => console.log(e));
     </script>
-    
+
 </body>
+
 </html>
