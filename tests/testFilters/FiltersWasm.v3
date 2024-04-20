@@ -21,7 +21,7 @@ def imgProc_invert(width: int, height: int, channels: u8, inputData: Pointer) ->
     var inputData_size = width * height * channels;
     var internal_data: Array<byte> = Array<byte>.new(inputData_size);
     for (i = 0; i < inputData_size; i++) {
-        internal_data[i] = inputData.load<byte>();
+        internal_data[i] = (inputData + i).load<byte>();
     }
     return Pointer.atContents(imgProc.invert(internal_data));
 }
