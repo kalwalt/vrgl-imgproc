@@ -27,6 +27,22 @@
                 const linearMemory = new Uint8Array(instance.exports.memory.buffer, offset, WIDTH * HEIGHT * 4);
                 imgData.data.set(linearMemory);
                 ctx.putImageData(imgData, 0, 0);
+
+                const mallocU8 = instance.exports.malloc_u8(3);
+                console.log(mallocU8);
+
+                const offset_invertData = new Uint8Array(instance.exports.memory.buffer, mallocU8, 3 *1 * 1);
+                offset_invertData.set([8, 120, 220])
+                console.log(offset_invertData);
+
+                const offset_invert = instance.exports.imgProc_invert(3, 1, 1, mallocU8);
+                console.log(offset_invert);
+                const img_invertData = ctx.createImageData(3, 1);
+                const linearMemory_invert = new Uint8Array(instance.exports.memory.buffer, offset_invert, 3 * 1 * 1);
+                console.log(linearMemory_invert);
+                img_invertData.data.set(linearMemory_invert);
+                ctx.putImageData(imgData, 0, 0);
+
             }
         ).catch(e => console.log(e));
     </script>

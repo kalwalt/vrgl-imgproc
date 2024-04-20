@@ -11,6 +11,26 @@ def some_data_out() -> Pointer {
     return Pointer.atContents(input);
 }
 
+def malloc_u8(size: int) -> Pointer {
+    var Arr: Array<byte> = Array<byte>.new(size);
+    return Pointer.atContents(Arr);
+}
+
+def imgProc_invert(width: int, height: int, channels: u8, inputData: Pointer) -> Pointer {
+    var imgProc = ImgProc.new(width, height, channels);
+    var inputData_size = width * height * channels;
+    var internal_data: Array<byte> = Array<byte>.new(inputData_size);
+    for (i = 0; i < inputData_size; i++) {
+        internal_data[i] = inputData.load<byte>();
+    }
+    return Pointer.atContents(imgProc.invert(internal_data));
+}
+
+def imgProc_invert2(width: int, height: int, channels: u8, inputData: Array<byte>) -> Pointer {
+    var imgProc = ImgProc.new(width, height, channels);   
+    return Pointer.atContents(imgProc.invert(inputData));
+}
+
 def imgProc_gray() -> Pointer {
     var imgProc = ImgProc.new(8, 1, 3);
     var input: Array<byte> = [108, 222, 120, 123, 27, 221, 210, 124, 87, 127, 120, 23, 27, 221, 210, 124, 58, 25, 120, 23, 27, 221, 210, 124];
@@ -40,6 +60,9 @@ def imgProc_gray2(width: int, height: int, channels: u8) {
 def main() {}
 
 export some_data_out;
+export malloc_u8;
+export imgProc_invert;
+export imgProc_invert2;
 export imgProc_gray;
 export imgProc_gray2;
 export imgproc_init = IProc.init;
