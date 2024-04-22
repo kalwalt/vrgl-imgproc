@@ -1,11 +1,3 @@
-component IProc {
-    private var imgProc: ImgProc;
-    def init(width: int, height: int, channels: u8) {
-        imgProc = ImgProc.new(width, height, channels);
-    }
-    def grayscale(src: Vector<byte>) -> Vector<byte> { return imgProc.grayscale(src); }
-}
-
 def some_data_out() -> Pointer {
     var input: Array<byte> = [108, 222, 120, 123, 127, 221, 210, 124, 87, 127, 120, 23, 27, 221, 210, 124, 58, 25, 120, 23, 27, 221, 210, 124];
     return Pointer.atContents(input);
@@ -26,35 +18,15 @@ def imgProc_invert(width: int, height: int, channels: u8, inputData: Pointer) ->
     return Pointer.atContents(imgProc.invert(internal_data));
 }
 
-def imgProc_invert2(width: int, height: int, channels: u8, inputData: Array<byte>) -> Pointer {
-    var imgProc = ImgProc.new(width, height, channels);   
-    return Pointer.atContents(imgProc.invert(inputData));
-}
-
-def imgProc_gray() -> Pointer {
-    var imgProc = ImgProc.new(8, 1, 3);
-    var input: Array<byte> = [108, 222, 120, 123, 27, 221, 210, 124, 87, 127, 120, 23, 27, 221, 210, 124, 58, 25, 120, 23, 27, 221, 210, 124];
-
-    return Pointer.atContents(imgProc.grayscale_wasm(input));
-}
-
-def imgProc_gray2(width: int, height: int, channels: u8) {
-    var src: Array<byte> = [108, 222, 120, 123, 27, 221, 210, 124, 87, 127, 120, 23, 27, 221, 210, 124, 58, 25, 120, 23, 27, 221, 210, 124];
-    var out = Array<byte>.new(width * height);
-    var r: u8;
-    var g: u8;
-    var b: u8;
-    var q: u8 = 0;
-    var imageSize = width * height;
-    var cn = channels;
-    for (p = 0; p < imageSize; p++) {
-        r = src[q + 0];
-        g = src[q + 1];
-        b = src[q + 2];
-        // https://stackoverflow.com/a/596241/5843642
-        out[p] = (r + r + r + b + g + g + g + g) >> 3;
-        q += cn;
+def imgProc_gray(width: int, height: int, channels: u8, inputData: Pointer) -> Pointer {
+    var imgProc = ImgProc.new(width, height, channels);
+    var inputData_size = width * height * channels;
+    var internal_data: Array<byte> = Array<byte>.new(inputData_size);
+    for (i = 0; i < inputData_size; i++) {
+        internal_data[i] = (inputData + i).load<byte>();
     }
+
+    return Pointer.atContents(imgProc.grayscale_wasm(internal_data));
 }
 
 def main() {}
@@ -62,8 +34,4 @@ def main() {}
 export some_data_out;
 export malloc_u8;
 export imgProc_invert;
-export imgProc_invert2;
 export imgProc_gray;
-export imgProc_gray2;
-export imgproc_init = IProc.init;
-export imgproc_grayscale = IProc.grayscale;

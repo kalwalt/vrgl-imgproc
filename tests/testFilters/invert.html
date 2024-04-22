@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invert example</title>
+</head>
+<body>
+    <canvas id='canvas' width='640' height='480'></canvas>
+    <canvas id="canvas_invert"  width='640' height='480'></canvas>
+    <img src="chalk.jpg" id="image" width="640" height="480">
+    <script src="init.js"></script>
+    <script>
+        var instance;
+        var WIDTH , HEIGHT;
+        const canvas = document.getElementById('canvas');
+        const canvas_invert = document.getElementById('canvas_invert');
+        const ctx = canvas.getContext('2d');
+        const ctx_invert = canvas_invert.getContext('2d');
+        const img = document.getElementById("image");
+        WIDTH = img.width, HEIGHT = img.height;
+
+        WebAssembly.instantiateStreaming(fetch("FiltersWasm.wasm"), {}).then(
+            obj => {
+                instance = obj.instance;
+                console.log(instance);
+
+                // Get the pixels as Uint8Array from the image        
+                const idata = getImgData(img, canvas, WIDTH, HEIGHT)
+                console.log(idata);
+
+                // We need to prepare "allocate" some memory to store 1228800 (640 * 480 * 4) bytes
+                const mallocU8 = instance.exports.malloc_u8(idata.data.length);
+                // We get the addres (virgil Pointer) of this allocated memory
+                console.log(mallocU8);
+
+                // Now we are ready to set some values in the memory.
+                // Note that we instantiate the Uint8Array with the buffer from the WebAssembly memory and the memory offset from mallocU8.
+                // Very important!!! Size defined in malloc_u8(1228800) need match here : (640 * 480 * 4)
+                const offset_invertData = new Uint8Array(instance.exports.memory.buffer, mallocU8, WIDTH * HEIGHT * 4);
+                offset_invertData.set(idata.data)
+                // This will print the values of the Uint8Array
+                console.log(offset_invertData);
+
+                // This is where the magic happens imgProc_invert accept (width: int, height: int, channels: u8, inputData: Pointer)
+                const offset_invert = instance.exports.imgProc_invert(WIDTH, HEIGHT, 4, mallocU8);
+                console.log(offset_invert);
+                const img_invertData = ctx_invert.createImageData(WIDTH, HEIGHT);
+                // Ready to show the inverted values, as we did for offset_invertData we do for linearMemory_invert
+                const linearMemory_invert = new Uint8Array(instance.exports.memory.buffer, offset_invert,  WIDTH * HEIGHT * 4);
+                // This will print the Uint8Array
+                console.log(linearMemory_invert);
+                //img_invertData.data.set(linearMemory_invert);
+                var inputData = linearMemory_invert;
+                console.log(inputData);
+                for (let i = 0, j = 0; i < inputData.length; i++) {
+                    img_invertData.data[i] = inputData[i];
+                }
+                ctx_invert.fillRect(0, 0, WIDTH, HEIGHT)
+                console.log(img_invertData);
+                ctx_invert.putImageData(img_invertData, 0, 0);
+            }
+        ).catch(e => console.log(e));
+    </script>
+    
+</body>
+</html>
