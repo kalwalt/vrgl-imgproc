@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grayscale example with Virgil code to WASM</title>
+</head>
+<body>
+    <canvas id='canvas' width='640' height='480'></canvas>
+    <canvas id="canvas_gray"  width='640' height='480'></canvas>
+    <img src="chalk.jpg" style="display:none" id="image" width="640" height="480">
+    <script src="init.js"></script>
+    <script>
+        var instance;
+        var WIDTH, HEIGHT;
+        const canvas = document.getElementById('canvas');
+        const canvas_invert = document.getElementById('canvas_gray');
+        const ctx = canvas.getContext('2d');
+        const ctx_gray = canvas_invert.getContext('2d');
+        const img = document.getElementById("image");
+        WIDTH = img.width, HEIGHT = img.height;
+
+        WebAssembly.instantiateStreaming(fetch("FiltersWasm.wasm"), {}).then(
+            obj => {
+                instance = obj.instance;
+                console.log(instance);
+
+                 // Get the pixels as Uint8Array from the image  
+                const idata = getImgData(img, canvas, img.width, img.height)
+                console.log(idata);
+
+                // We need to prepare "allocate" some memory to store 1228800 (640 * 480 * 4) bytes
+                const mallocU8 = instance.exports.malloc_u8(idata.data.length);
+                // We get the addres (virgil Pointer) of this allocated memory
+                console.log(mallocU8);
+
+                // Now we are ready to set some values in the memory.
+                // Note that we instantiate the Uint8Array with the buffer from the WebAssembly memory and the memory offset from mallocU8.
+                // Very important!!! Size defined in malloc_u8(1228800) need match here : (640 * 480 * 4)
+                const offset_grayData = new Uint8Array(instance.exports.memory.buffer, mallocU8, WIDTH * HEIGHT * 4);
+                offset_grayData.set(idata.data)
+                // This will print the values of the Uint8Array
+                console.log(offset_grayData);
+
+                // This is where the magic happens imgProc_gray accept (width: int, height: int, channels: u8, inputData: Pointer)
+                const offset_gray = instance.exports.imgProc_gray(640, 480, 4, mallocU8);
+                console.log(offset_gray);
+                const img_grayData = ctx_gray.createImageData(640, 480);
+                // Ready to show the grayscaled values, as we did for offset_grayData we do for linearMemory_gray
+                const linearMemory_gray = new Uint8Array(instance.exports.memory.buffer, offset_gray, WIDTH * HEIGHT * 4);
+                // This will print the Uint8Array
+                console.log(linearMemory_gray);
+                img_grayData.data.set(linearMemory_gray);
+                ctx_gray.fillRect(0,0, WIDTH, HEIGHT)
+                console.log(img_grayData);
+                ctx_gray.putImageData(img_grayData, 0, 0);
+            }
+        ).catch(e => console.log(e));
+    </script>
+    
+</body>
+</html>

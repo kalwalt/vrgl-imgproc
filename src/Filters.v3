@@ -36,7 +36,7 @@ class ImgProc extends Filters {
         var r: u8;
         var g: u8;
         var b: u8;
-        var q: u8 = 0;
+        var q: int = 0;
         var imageSize = this.width * this.height;
         var cn = this.channels;
         for (p = 0; p < imageSize; p++) {
