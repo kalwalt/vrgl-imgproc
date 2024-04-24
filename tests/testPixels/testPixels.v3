@@ -1,0 +1,21 @@
+def main() {
+    var width: u32 = 10;
+    var height: u32 = 10;
+    var p = PixelData.new(width, height);
+    p[4, 4].red = 99;
+    p[4, 4].green = 12;
+    p[4, 4].blue = 217;
+    System.puts("Display PixelData at [4, 4]: \n");
+    System.puts("red : ");
+    System.puti(p[4, 4].red);
+    System.puts("\n");
+    System.puts("green : ");
+    System.puti(p[4, 4].green);
+    System.puts("\n");
+    System.puts("blue : ");
+    System.puti(p[4, 4].blue);
+    System.puts("\n");
+    System.puts("Size of PixelData: ");
+    System.puti(int.!(p.size()));
+    System.puts("\n");
+}

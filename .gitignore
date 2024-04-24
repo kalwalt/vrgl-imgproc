@@ -1,2 +1,3 @@
 tests/*/*.wasm
 tests/*/testFilters
+tests/*/testPixels

@@ -1,0 +1,29 @@
+enum Pixels(numPixels: int) {
+    RGB(3),
+    RGBA(4),
+    BGR(3),
+    BGRA(4),
+    GRAY(1)
+}
+
+layout RGB {
+       +0	red:	byte;	// red intensity 0...255
+       +1	green:	byte;	// green intensity 0...255
+       +2	blue:	byte;	// blue intensity 0...255
+       =3;			// total size = 4 bytes
+}
+
+layout RGBA {
+       +0	red:	byte;	// red intensity 0...255
+       +1	green:	byte;	// green intensity 0...255
+       +2	blue:	byte;	// blue intensity 0...255
+       +3	alpha:	byte;	// alpha channel (transparency)
+       =4;			// total size = 4 bytes
+}
+
+class PixelData(width: u32, height: u32) {
+    def data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.RGB.numPixels);
+    def [x: int, y: int] -> Ref<RGB> { return Ref<RGB>.at(data, x * y); }
+    def start() -> Pointer { return Pointer.atContents(data); }
+    def size() -> u32 { return u32.!(data.length); }
+}
