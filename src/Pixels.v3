@@ -10,7 +10,7 @@ layout RGB {
        +0	red:	byte;	// red intensity 0...255
        +1	green:	byte;	// green intensity 0...255
        +2	blue:	byte;	// blue intensity 0...255
-       =3;			// total size = 4 bytes
+       =3;			// total size = 3 bytes
 }
 
 layout RGBA {
@@ -21,8 +21,37 @@ layout RGBA {
        =4;			// total size = 4 bytes
 }
 
-class PixelData(width: u32, height: u32) {
-    def data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.RGB.numPixels);
+layout BGR {
+    +0  blue: byte;   // blue intensity 0...255
+    +1	green:	byte;	// green intensity 0...255
+    +2  red:	byte;	// red intensity 0...255
+    =3;         // total size = 3 bytes
+}
+
+layout BGRA {
+    +0  blue: byte;   // blue intensity 0...255
+    +1	green:	byte;	// green intensity 0...255
+    +2  red:	byte;	// red intensity 0...255
+    +3	alpha:	byte;	// alpha channel (transparency)
+    =4;         // total size = 3 bytes
+}
+
+layout GRAY {
+    +0 gray: byte;   // gray intensity 0...255
+    =1;     // total size = 1 byte
+}
+
+class PixelData {
+    private var data:  Array<byte>;
+    new(width: u32, height: u32, pixelType: Pixels) {
+        match(pixelType) {
+            RGB => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.RGB.numPixels);
+            RGBA => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.RGBA.numPixels);
+            BGR => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.BGR.numPixels);
+            BGRA => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.BGRA.numPixels);
+            GRAY => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.GRAY.numPixels);
+        }
+    }
     def [x: int, y: int] -> Ref<RGB> { return Ref<RGB>.at(data, x * y); }
     def start() -> Pointer { return Pointer.atContents(data); }
     def size() -> u32 { return u32.!(data.length); }
