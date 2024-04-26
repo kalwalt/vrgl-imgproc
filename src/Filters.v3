@@ -11,6 +11,27 @@ class Filters {
 
 class ImgProc extends Filters {
     new(width: int, height: int, channels: u8) super(width, height, channels) { }
+
+    def grayscaleRGBA(src: Array<byte>) -> PixelDataGRAY {
+        var data = PixelDataGRAY.new(u32.!(width), u32.!(height));
+        var r: u8;
+        var g: u8;
+        var b: u8;
+        var q: u8 = 0;
+        var d = data[0, 0];
+        var cn = this.channels;
+        for(i < width) {
+            for(j < height) {
+                r = src[q + 0];
+                g = src[q + 1];
+                b = src[q + 2];
+                data[i, j].gray = (r + r + r + b + g + g + g + g) >> 3;
+                q += cn;
+            }
+        }
+        return data;
+    }
+
     def grayscale(src: Vector<byte>) -> Vector<byte> {
         var out = Vector<byte>.new();
         out.resize(this.width * this.height);

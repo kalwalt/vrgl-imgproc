@@ -1,24 +1,54 @@
 def main() {
     var width: u32 = 10;
     var height: u32 = 10;
-    var p = PixelDataRGB.new(width, height);
-    p[4, 4].red = 99;
-    p[4, 4].green = 12;
-    p[4, 4].blue = 217;
-    System.puts("Display PixelData at [4, 4]: \n");
+    
+    var p_rgb = PixelDataRGB.new(width, height);
+
+    p_rgb[4, 4].red = 99;
+    p_rgb[4, 4].green = 12;
+    p_rgb[4, 4].blue = 217;
+
+    System.puts("Display PixelDataRGB at [4, 4]: \n");
     System.puts("red : ");
-    System.puti(p[4, 4].red);
+    System.puti(p_rgb[4, 4].red);
     System.puts("\n");
     System.puts("green : ");
-    System.puti(p[4, 4].green);
+    System.puti(p_rgb[4, 4].green);
     System.puts("\n");
     System.puts("blue : ");
-    System.puti(p[4, 4].blue);
+    System.puti(p_rgb[4, 4].blue);
     System.puts("\n");
     System.puts("Size of PixelData: ");
-    System.puti(int.!(p.size()));
+    System.puti(int.!(p_rgb.size()));
     System.puts("\n");
     System.puts("PixelData channels: ");
-    System.puti(p.getChannels());
+    System.puti(p_rgb.getChannels());
+    System.puts("\n");
+
+    var p_rgba = PixelDataRGBA.new(width, height);
+
+    p_rgba[4, 4].red = 109;
+    p_rgba[4, 4].green = 110;
+    p_rgba[4, 4].blue = 35;
+    p_rgba[4, 4].alpha = 255;
+
+    System.puts("Display PixelDataRGBA at [4, 4]: \n");
+    System.puts("red : ");
+    System.puti(p_rgba[4, 4].red);
+    System.puts("\n");
+    System.puts("green : ");
+    System.puti(p_rgba[4, 4].green);
+    System.puts("\n");
+    System.puts("blue : ");
+    System.puti(p_rgba[4, 4].blue);
+    System.puts("\n");
+    System.puts("alpha : ");
+    System.puti(p_rgba[4, 4].alpha);
+    System.puts("\n");
+    System.puts("Size of PixelData: ");
+    System.puti(int.!(p_rgba.size()));
+    System.puts("\n");
+    System.puts("PixelData channels: ");
+    System.puti(p_rgba.getChannels());
     System.puts("\n");
 }
