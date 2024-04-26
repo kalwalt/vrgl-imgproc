@@ -1,4 +1,4 @@
-enum Pixels(numPixels: int) {
+enum PixelType(numPixels: int) {
     RGB(3),
     RGBA(4),
     BGR(3),
@@ -42,17 +42,63 @@ layout GRAY {
 }
 
 class PixelData {
-    private var data:  Array<byte>;
-    new(width: u32, height: u32, pixelType: Pixels) {
-        match(pixelType) {
-            RGB => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.RGB.numPixels);
-            RGBA => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.RGBA.numPixels);
-            BGR => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.BGR.numPixels);
-            BGRA => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.BGRA.numPixels);
-            GRAY => data = Array<byte>.new(int.!(width) * int.!(height) * Pixels.GRAY.numPixels);
-        }
-    }
-    def [x: int, y: int] -> Ref<RGB> { return Ref<RGB>.at(data, x * y); }
+    private var data: Array<byte>;
+    private def width: u32;
+    private def height: u32;
+    private var pixelType: PixelType;
+    private var channels: int;
+
+    new(width: u32, height: u32) {}
+
     def start() -> Pointer { return Pointer.atContents(data); }
     def size() -> u32 { return u32.!(data.length); }
+    def getPixelType() -> PixelType { return pixelType; }
+    def getWidth() -> u32 { return width; }
+    def getHeight() -> u32 { return height; }
+    def getChannels() -> int { return channels; }
+}
+
+class PixelDataRGB extends PixelData {
+    new(width: u32, height: u32) super(width, height) {
+        pixelType = PixelType.RGB;
+        channels = pixelType.numPixels;
+        data = Array<byte>.new(int.!(width) * int.!(height) * channels);
+    }
+    def [x: int, y: int] -> Ref<RGB> { return Ref<RGB>.at(data, x * y); }
+}
+
+class PixelDataRGBA extends PixelData {
+    new(width: u32, height: u32) super(width, height) {
+        pixelType = PixelType.RGBA;
+        channels = pixelType.numPixels;
+        data = Array<byte>.new(int.!(width) * int.!(height) * channels);
+    }
+    def [x: int, y: int] -> Ref<RGBA> { return Ref<RGBA>.at(data, x * y); }
+}
+
+class PixelDataBGR extends PixelData {
+    new(width: u32, height: u32) super(width, height) {
+        pixelType = PixelType.BGR;
+        channels = pixelType.numPixels;
+        data = Array<byte>.new(int.!(width) * int.!(height) * channels);
+    }
+    def [x: int, y: int] -> Ref<BGR> { return Ref<BGR>.at(data, x * y); }
+}
+
+class PixelDataBGRA extends PixelData {
+    new(width: u32, height: u32) super(width, height) {
+        pixelType = PixelType.BGRA;
+        channels = pixelType.numPixels;
+        data = Array<byte>.new(int.!(width) * int.!(height) * channels);
+    }
+    def [x: int, y: int] -> Ref<BGRA> { return Ref<BGRA>.at(data, x * y); }
+}
+
+class PixelDataGRAY extends PixelData {
+    new(width: u32, height: u32) super(width, height) {
+        pixelType = PixelType.GRAY;
+        channels = pixelType.numPixels;
+        data = Array<byte>.new(int.!(width) * int.!(height) * channels);
+    }
+    def [x: int, y: int] -> Ref<GRAY> { return Ref<GRAY>.at(data, x * y); }
 }

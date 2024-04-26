@@ -1,7 +1,7 @@
 def main() {
     var width: u32 = 10;
     var height: u32 = 10;
-    var p = PixelData.new(width, height, Pixels.RGB);
+    var p = PixelDataRGB.new(width, height);
     p[4, 4].red = 99;
     p[4, 4].green = 12;
     p[4, 4].blue = 217;
@@ -17,5 +17,8 @@ def main() {
     System.puts("\n");
     System.puts("Size of PixelData: ");
     System.puti(int.!(p.size()));
+    System.puts("\n");
+    System.puts("PixelData channels: ");
+    System.puti(p.getChannels());
     System.puts("\n");
 }
