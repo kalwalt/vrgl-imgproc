@@ -18,7 +18,7 @@ class ImgProc extends Filters {
         var g: u8;
         var b: u8;
         var q: u8 = 0;
-        var d = data[0, 0];
+        //var d = data[0, 0];
         var cn = this.channels;
         for(i < width) {
             for(j < height) {

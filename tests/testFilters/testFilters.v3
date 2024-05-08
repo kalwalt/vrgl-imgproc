@@ -23,4 +23,15 @@ def main() {
        System.puti(invert[i]);
        System.puts("\n");
    }
+
+System.puts("convert RGBA data to grayPixels...\n");
+
+   var grayPixels = imgProc.grayscaleRGBA(testdata_a);
+
+   var g = grayPixels.to_Array();
+
+   for (i = 0; i < g.length; i++) {
+       System.puti(g[i]);
+       System.puts("\n");
+   }
 }

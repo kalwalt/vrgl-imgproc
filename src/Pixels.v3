@@ -101,4 +101,13 @@ class PixelDataGRAY extends PixelData {
         data = Array<byte>.new(int.!(width) * int.!(height) * channels);
     }
     def [x: int, y: int] -> Ref<GRAY> { return Ref<GRAY>.at(data, x * y); }
+    def at(i: int)  -> Ref<GRAY> { return Ref<GRAY>.at(data, i); }
+    def to_Array() -> Array<byte> {
+        /*var out = Array<byte>.new(int.!(this.size()));
+        for(i < this.size()) {
+           out[i] = Ref<GRAY>.at(data, int.!(i)).gray;
+        }*/
+    //return out;
+    return data;
+    }
 }
